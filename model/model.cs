@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
 namespace Truckplanner
@@ -55,6 +56,16 @@ namespace Truckplanner
              * TODO, for version 2.
              */
             public Truck Truck { get; set; }
+
+            public IEnumerable<LocationLogEntry> LocationLog
+            {
+                get
+                {
+                    return from ll in this.Truck.LocationLog
+                           where ll.Time >= this.Start && ll.Time <= (this.Start.Add(this.Length))
+                           select ll;
+                }
+            }
         }
 
         public class Driver

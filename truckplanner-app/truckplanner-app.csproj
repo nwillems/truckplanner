@@ -8,5 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\model\truckplanner-model.csproj" />
+    <ProjectReference Include="..\truckplanner-business\truckplanner-business.csproj" />
   </ItemGroup>
 </Project>

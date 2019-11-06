@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Truckplanner.Model;
+using Truckplanner.Business;
+using System.Threading.Tasks;
 
 namespace Truckplanner
 {
@@ -9,16 +13,46 @@ namespace Truckplanner
         {
             Console.WriteLine("Hello World!");
 
+            using(var countryService = new CountryService())
             using(var db = new TruckPlannerContext())
             {
                 db.Database.EnsureCreated();
 
                 Console.WriteLine("Creating some drivers");
+                var jane = new Driver { Name = "Jane Doe", Birthdate = new DateTime(1950, 4, 25) }
                 db.Add(new Driver { Name = "John Doe", Birthdate = new DateTime(1990, 4, 25) });
-                db.Add(new Driver { Name = "Jane Doe", Birthdate = new DateTime(1950, 4, 25) });
-
+                db.Add(jane);
                 db.SaveChanges();
 
+                Console.WriteLine("And a truck and a plan");
+                var monster = new Truck();
+                monster.LocationLog.AddRange(new LocationLogEntry[] {
+                    new LocationLogEntry { Latitude = 2, Longitude = 0, Time = new DateTime(2018, 2, 10, 1, 0,0) },
+                    new LocationLogEntry { Latitude = 2, Longitude = 1, Time = new DateTime(2018, 2, 10, 2, 0, 0) },
+                    new LocationLogEntry { Latitude = 2, Longitude = 2, Time = new DateTime(2018, 2, 10, 3, 0, 0) },
+                    new LocationLogEntry { Latitude = 2, Longitude = 3, Time = new DateTime(2018, 2, 10, 4, 0, 0) },
+                }.AsEnumerable());
+
+                db.Add(monster);
+                db.Add(new TruckPlan { Driver = jane, Start = new DateTime(2018, 2, 10), Length = new TimeSpan(8, 0, 0), Truck = monster });
+                db.SaveChanges();
+
+                var distanceCalculator = new TruckplanDistanceCalculator();
+                // Fun hoops to jump thorugh to get async stuff to be synchronous.
+                Func<LocationLogEntry, Task<bool>> ff = async (ll) => await countryService.GetCountry((ll.Latitude, ll.Longitude)) == "Germany";
+                Func<LocationLogEntry, bool> germanyFilter = (llorg) => (ff(llorg)).Result;
+
+                // drivers.Age > 50, in February 2018, in Germany select km
+                DateTime dt_start = DateTime.Parse("2018-02-01"), dt_end = DateTime.Parse("2018-02-28");
+                Func<Driver, bool> driverFilter = (driver) => (dt_start.Year - driver.Birthdate.Year) > 50;
+
+                var truckplan_distances = from tp in db.TruckPlans
+                                 where (dt_start <= tp.Start && tp.Start <= dt_end) && driverFilter(tp.Driver)
+                                 select distanceCalculator.calculateDistanceFiltered(tp, germanyFilter);
+
+                Console.WriteLine(String.Format("In total, drivers over the age of 50, in the February 2018, drove in Germany, this many kilometers: {0}", truckplan_distances.Sum()));
+
+                
             }
         }
     }

@@ -5,13 +5,24 @@ using System.Threading.Tasks;
 
 namespace Truckplanner.Business
 {
-    public class CountryService
+    public class CountryService : IDisposable
     {
         private readonly Func<HttpMessageHandler> _messageHandlerFactory;
+
+        public CountryService()
+        {
+            _messageHandlerFactory = () => new HttpMessageHandler();
+        }
 
         public CountryService(Func<HttpMessageHandler> messageHandlerFactory)
         {
             _messageHandlerFactory = messageHandlerFactory;
+        }
+
+        public void Dispose()
+        {
+            // Nothing to handle here... Yet...
+            //  But in the future, please ensure all async requests are closed properly...
         }
 
         public async Task<string> GetCountry((float, float) coordinate)

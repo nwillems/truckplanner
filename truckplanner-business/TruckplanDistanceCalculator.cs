@@ -19,16 +19,28 @@ namespace Truckplanner
 
             public double calculateDistance(TruckPlan truckPlan)
             {
-                IEnumerable<LocationLogEntry> entries = from ll in truckPlan.Truck.LocationLog
-                                                 where ll.Time >= truckPlan.Start && ll.Time <= (truckPlan.Start.Add(truckPlan.Length))
-                                                 select ll;
+                IEnumerable<LocationLogEntry> entries = truckPlan.LocationLog;
+
+                return calculate(entries);
+            }
+
+            public double calculateDistanceFiltered(TruckPlan truckPlan, Func<LocationLogEntry, bool> filter)
+            {
+                IEnumerable<LocationLogEntry> entries = from ll in truckPlan.LocationLog
+                                                        where filter(ll)
+                                                        select ll;
+                return calculate(entries);
+            }
+             
+            private double calculate(IEnumerable<LocationLogEntry> entries)
+            {
                 double result = 0.0;
                 // No worries in taking the first element - since its difference in distance with the first element is 0.0(plus minus rounding)
                 //  Yes, it's a waste of CPU cycles, but it's more readable
                 LocationLogEntry previous = entries.FirstOrDefault();
                 foreach (var ll in entries)
                 {
-                    result += distanceCalculation( Math.Abs(previous.Latitude - ll.Latitude), Math.Abs(previous.Longitude - ll.Longitude) );
+                    result += distanceCalculation(Math.Abs(previous.Latitude - ll.Latitude), Math.Abs(previous.Longitude - ll.Longitude));
                     previous = ll;
                 }
 
