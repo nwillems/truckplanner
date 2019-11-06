@@ -9,6 +9,12 @@ tests by running the following command:
 dotnet test
 ```
 
+To run the program do:
+
+```
+dotnet run --project truckplanner-app
+```
+
 On the todo list is to dockerize the setup and add a "mocked"
 CountryService(expect python).
 
