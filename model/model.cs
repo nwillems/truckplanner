@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +21,16 @@ namespace Truckplanner
             {
                 modelBuilder.Entity<LocationLogEntry>()
                     .HasKey(l => new { l.TruckId, l.Time });
+
+                modelBuilder.Entity<TruckPlan>()
+                    .HasOne(tp => tp.Driver)
+                    .WithMany()
+                    .IsRequired();
+
+                modelBuilder.Entity<TruckPlan>()
+                    .HasOne(tp => tp.Truck)
+                    .WithMany()
+                    .IsRequired();
             }
         }
 
@@ -44,27 +55,36 @@ namespace Truckplanner
         {
             public int Id { get; set;  }
 
-            public Driver Driver { get; set; }
             public DateTime Start { get; set; }
             public TimeSpan Length { get; set; }
 
-            /* I desired to make this a slice of the LocationLog,
+            public int DriverId { get; set; }
+            public Driver Driver { get; set; }
+
+            /* I desired to make this a propper slice of the LocationLog,
              * However, that was slightly impractical, with the times as
              * indicies into the list.
              *
              * It could be done, and probably would, if more time was allocated.
              * TODO, for version 2.
              */
+            public int TruckId { get; set; }
             public Truck Truck { get; set; }
 
+            [NotMapped]
             public IEnumerable<LocationLogEntry> LocationLog
             {
                 get
                 {
-                    return from ll in this.Truck.LocationLog
+                    return (from ll in this.Truck.LocationLog
                            where ll.Time >= this.Start && ll.Time <= (this.Start.Add(this.Length))
-                           select ll;
+                           select ll).AsEnumerable();
                 }
+            }
+
+            public override string ToString()
+            {
+                return string.Format("{0}( {1}, {2}, {3}, {4}, {5})", base.ToString(), Id, Driver, Start, Length, Truck);
             }
         }
 

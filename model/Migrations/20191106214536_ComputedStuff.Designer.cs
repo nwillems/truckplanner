@@ -9,7 +9,7 @@ using Truckplanner.Model;
 namespace truckplannermodel.Migrations
 {
     [DbContext(typeof(TruckPlannerContext))]
-    [Migration("20191106210502_ComputedStuff")]
+    [Migration("20191106214536_ComputedStuff")]
     partial class ComputedStuff
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,12 +49,7 @@ namespace truckplannermodel.Migrations
                     b.Property<float>("Longitude")
                         .HasColumnType("REAL");
 
-                    b.Property<int?>("TruckPlanId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("TruckId", "Time");
-
-                    b.HasIndex("TruckPlanId");
 
                     b.ToTable("LocationLogEntry");
                 });
@@ -104,10 +99,6 @@ namespace truckplannermodel.Migrations
                         .HasForeignKey("TruckId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Truckplanner.Model.TruckPlan", null)
-                        .WithMany("LocationLog")
-                        .HasForeignKey("TruckPlanId");
                 });
 
             modelBuilder.Entity("Truckplanner.Model.TruckPlan", b =>

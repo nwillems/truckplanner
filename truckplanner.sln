@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "truckplanner-business", "tr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "truckplanner-model", "model\truckplanner-model.csproj", "{ACA79A5F-B788-4BE3-B1AE-6E58B626BB38}"
 EndProject
-Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "tests", "tests\tests.csproj", "{B5CE9819-8DF5-47A9-A02D-191FDC6F004B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tests", "tests\tests.csproj", "{B5CE9819-8DF5-47A9-A02D-191FDC6F004B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
