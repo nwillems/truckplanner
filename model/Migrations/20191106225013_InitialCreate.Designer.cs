@@ -9,8 +9,8 @@ using Truckplanner.Model;
 namespace truckplannermodel.Migrations
 {
     [DbContext(typeof(TruckPlannerContext))]
-    [Migration("20191106214536_ComputedStuff")]
-    partial class ComputedStuff
+    [Migration("20191106225013_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -71,7 +71,7 @@ namespace truckplannermodel.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("DriverId")
+                    b.Property<int>("DriverId")
                         .HasColumnType("INTEGER");
 
                     b.Property<TimeSpan>("Length")
@@ -80,7 +80,7 @@ namespace truckplannermodel.Migrations
                     b.Property<DateTime>("Start")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("TruckId")
+                    b.Property<int>("TruckId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -105,11 +105,15 @@ namespace truckplannermodel.Migrations
                 {
                     b.HasOne("Truckplanner.Model.Driver", "Driver")
                         .WithMany()
-                        .HasForeignKey("DriverId");
+                        .HasForeignKey("DriverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Truckplanner.Model.Truck", "Truck")
                         .WithMany()
-                        .HasForeignKey("TruckId");
+                        .HasForeignKey("TruckId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

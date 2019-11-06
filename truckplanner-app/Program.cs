@@ -4,6 +4,7 @@ using System.Linq;
 using Truckplanner.Model;
 using Truckplanner.Business;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Truckplanner
 {
@@ -39,13 +40,9 @@ namespace Truckplanner
                 db.TruckPlans.Add(tp);
                 db.SaveChanges();
 
-                tp = db.TruckPlans.First();
                 tp.Driver = db.Drivers.First();
                 tp.Truck = db.Trucks.First();
 
-                Console.WriteLine(tp);
-
-                db.Entry(tp).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
                 db.SaveChanges();
             }
 
@@ -53,15 +50,12 @@ namespace Truckplanner
             using (var countryService = new CountryService())
             using (var db = new TruckPlannerContext())
             {
-                foreach (var tp in db.TruckPlans)
-                {
-                    Console.WriteLine(tp);
-                }
-
-                foreach (var trucks in db.Trucks)
-                {
-                    Console.WriteLine(trucks);
-                }
+                // Ensure we are somewhat eagerly lodaing all the datas.
+                var tps = db.TruckPlans
+                    .Include(tp => tp.Driver)
+                    .Include(tp => tp.Truck)
+                        .ThenInclude(t => t.LocationLog)
+                    .ToList();
 
                 var distanceCalculator = new TruckplanDistanceCalculator();
                 // Fun hoops to jump thorugh to get async stuff to be synchronous.

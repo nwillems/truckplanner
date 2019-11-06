@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Threading.Tasks;
-
-namespace Truckplanner.Business
+namespace truckplanner_business
 {
-    public interface ICountryService : IDisposable
+    public interface ICountryService
     {
-        public Task<string> GetCountry((float, float) coordinate);
     }
 }

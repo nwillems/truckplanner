@@ -12,6 +12,10 @@ dotnet test
 On the todo list is to dockerize the setup and add a "mocked"
 CountryService(expect python).
 
+**DISCLAMER** The code currently throws a rather large exception. Thats because
+it can't find a country service. Once dockerized, the country service will be
+added in a docker-compose setup.
+
 # Description 
 The problem: A TruckPlan describes a single Driver driving a Truck for a
 continuous period. Each Truck has a GPS device, that provides updates

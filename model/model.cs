@@ -58,7 +58,6 @@ namespace Truckplanner
             public DateTime Start { get; set; }
             public TimeSpan Length { get; set; }
 
-            public int DriverId { get; set; }
             public Driver Driver { get; set; }
 
             /* I desired to make this a propper slice of the LocationLog,
@@ -68,7 +67,6 @@ namespace Truckplanner
              * It could be done, and probably would, if more time was allocated.
              * TODO, for version 2.
              */
-            public int TruckId { get; set; }
             public Truck Truck { get; set; }
 
             [NotMapped]

@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace Truckplanner.Business
 {
-    public class CountryService : ICountryService
+    public class CountryService : IDisposable
     {
         private readonly Func<HttpMessageHandler> _messageHandlerFactory;
 
         public CountryService()
         {
-            _messageHandlerFactory = () => new HttpClientHandler();
+            _messageHandlerFactory = () => new HttpMessageHandler();
         }
 
         public CountryService(Func<HttpMessageHandler> messageHandlerFactory)

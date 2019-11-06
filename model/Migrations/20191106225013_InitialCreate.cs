@@ -59,10 +59,10 @@ namespace truckplannermodel.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    DriverId = table.Column<int>(nullable: true),
                     Start = table.Column<DateTime>(nullable: false),
                     Length = table.Column<TimeSpan>(nullable: false),
-                    TruckId = table.Column<int>(nullable: true)
+                    DriverId = table.Column<int>(nullable: false),
+                    TruckId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -72,13 +72,13 @@ namespace truckplannermodel.Migrations
                         column: x => x.DriverId,
                         principalTable: "Drivers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_TruckPlans_Trucks_TruckId",
                         column: x => x.TruckId,
                         principalTable: "Trucks",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
